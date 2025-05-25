@@ -18,8 +18,10 @@ import java.util.List;
 public class AuthController {
 
     private final AuthService authService;
+    /*
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+     */
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
@@ -32,6 +34,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(registerRequest));
     }
 
+    /*
     @PostMapping("/encode-passwords")
     public ResponseEntity<String> encodeAllPassword(){
         List<User> users = userRepository.findAll();
@@ -44,4 +47,5 @@ public class AuthController {
 
         return ResponseEntity.ok("Successfully encoded all passwords");
     }
+     */
 }
