@@ -43,12 +43,12 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String getUsernameFromToken(String token) {
+    public String getDniFromToken(String token) {
         return getClaim(token, Claims::getSubject);
     }
 
     public boolean isTokenValid(String token, UserDetails UserDetails) {
-        final String username = getUsernameFromToken(token);
+        final String username = getDniFromToken(token);
         return (username.equals(UserDetails.getUsername()) && !isTokenExpired(token));
     }
 

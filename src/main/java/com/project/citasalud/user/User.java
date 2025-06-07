@@ -23,7 +23,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(unique = true, length = 10)
-    private String username;
+    private String dni;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false, length = 50)
@@ -73,4 +73,11 @@ public class User implements UserDetails {
         //return UserDetails.super.isEnabled();
         return true;
     }
+
+    // Implementación del método getUsername requerido por UserDetails
+    @Override
+    public String getUsername() {
+        return dni; // Devuelve el campo dni como "username"
+    }
+
 }

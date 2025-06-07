@@ -16,7 +16,7 @@ public class RegisterRequest {
     @NotBlank(message = "Cédula is required")
     @Pattern(regexp = "^[0-9]{9,10}$",
     message = "Cédula must contain only digits")
-    String username;
+    String dni;
     @NotBlank(message = "Password is required")
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+])[A-Za-z\\d][A-Za-z\\d!@#$%^&*()_+]{7,19}$",
     message = "Password must contain at least one letter, one digit and one special character")
