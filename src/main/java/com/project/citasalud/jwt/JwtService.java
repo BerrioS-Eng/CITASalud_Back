@@ -20,19 +20,27 @@ public class JwtService {
 
     @Value("${SECRET-KEY}")
     private String secretKey;
+    @Value("${JWT_EXPIRATION}")
+    private long jwtExpiration;
+    @Value("${JWT_REFRESH_EXPIRATION}")
+    private long refreshExpiration;
 
 
     public String getToken(UserDetails user) {
-        return getToken(new HashMap<>(), user);
+        return buildToken(new HashMap<>(), user, jwtExpiration);
     }
 
-    public String getToken(Map<String, Object> extraClaims, UserDetails user) {
+    public String getRefreshToken(UserDetails user) {
+        return buildToken(new HashMap<>(), user, refreshExpiration);
+    }
+
+    public String buildToken(Map<String, Object> extraClaims, UserDetails user, final long expiration) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
+                .setExpiration(new Date(System.currentTimeMillis()+expiration))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
 

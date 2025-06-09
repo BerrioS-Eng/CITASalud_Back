@@ -1,5 +1,6 @@
 package com.project.citasalud.config;
 
+import com.project.citasalud.user.User;
 import com.project.citasalud.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -34,8 +35,14 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailService() {
-        return username -> userRepository.findByDni(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return username -> {
+            final User user = userRepository.findByDni(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            return org.springframework.security.core.userdetails.User.builder()
+                    .username(user.getDni())
+                    .password(user.getPassword())
+                    .build();
+        };
     }
 
     @Bean
