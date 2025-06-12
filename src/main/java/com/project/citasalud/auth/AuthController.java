@@ -16,19 +16,24 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<EmailResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<EmailResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         return ResponseEntity.ok(authService.register(registerRequest));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader) {
         return ResponseEntity.ok(authService.refreshToken(authHeader));
+    }
+
+    @PostMapping("/verifyCode")
+    public ResponseEntity<AuthResponse> codeMailMFA(@RequestBody CodeEmailRequest codeEmailRequest) {
+        return ResponseEntity.ok(authService.verifyCodeAndGenerateTokens(codeEmailRequest));
     }
 
 }

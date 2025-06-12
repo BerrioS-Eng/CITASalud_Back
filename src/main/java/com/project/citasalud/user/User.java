@@ -37,7 +37,7 @@ public class User implements UserDetails {
     private String city;
     @Column(nullable = false)
     private String address;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
     private String numberPhone;

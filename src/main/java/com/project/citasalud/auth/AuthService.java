@@ -1,6 +1,8 @@
 package com.project.citasalud.auth;
 
+import com.project.citasalud.codeMFA.VerificationCodeService;
 import com.project.citasalud.jwt.JwtService;
+import com.project.citasalud.mfa.EmailVerificationService;
 import com.project.citasalud.tokenJWT.Token;
 import com.project.citasalud.tokenJWT.TokenRepository;
 import com.project.citasalud.tokenJWT.TokenType;
@@ -26,21 +28,23 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
+    private final VerificationCodeService verificationCodeService;
+    private final EmailVerificationService emailVerificationService;
 
-    public AuthResponse login(LoginRequest loginRequest) {
+    public EmailResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getDni(), loginRequest.getPassword()));
-        User user = userRepository.findByDni(loginRequest.getDni()).orElseThrow();
-        String token = jwtService.getToken(user);
-        String refreshToken = jwtService.getRefreshToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, token);
-        return AuthResponse.builder()
-                .token(token)
-                .refreshToken(refreshToken)
+
+        User user = userRepository.findByDni(loginRequest.getDni())
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid credentials"));
+
+        emailVerificationService.sendVerificationCode(user.getEmail());
+
+        return EmailResponse.builder()
+                .email(user.getEmail())
                 .build();
     }
 
-    public AuthResponse register(RegisterRequest registerRequest) {
+    public EmailResponse register(RegisterRequest registerRequest) {
         User user = User.builder()
                 .dni(registerRequest.getDni())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
@@ -55,12 +59,11 @@ public class AuthService {
                 .build();
 
         User savedUser = userRepository.save(user);
-        var jwtToken = jwtService.getToken(savedUser);
-        var refreshToken = jwtService.getRefreshToken(savedUser);
-        saveUserToken(savedUser, jwtToken);
-        return AuthResponse.builder()
-                .token(jwtToken)
-                .refreshToken(refreshToken)
+
+        emailVerificationService.sendVerificationCode(savedUser.getEmail());
+
+        return EmailResponse.builder()
+                .email(user.getEmail())
                 .build();
     }
 
@@ -114,6 +117,26 @@ public class AuthService {
         saveUserToken(user, newToken);
         return AuthResponse.builder()
                 .token(newToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public AuthResponse verifyCodeAndGenerateTokens(CodeEmailRequest codeEmailRequest){
+        if (!verificationCodeService.verifyCode(codeEmailRequest.getEmail(), codeEmailRequest.getCode())){
+            throw new IllegalArgumentException("Invalid or expired verification code");
+        }
+
+        User user = userRepository.findByEmail(codeEmailRequest.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException(codeEmailRequest.getEmail()));
+
+        String token = jwtService.getToken(user);
+        String refreshToken = jwtService.getRefreshToken(user);
+
+        revokeAllUserTokens(user);
+        saveUserToken(user, token);
+
+        return AuthResponse.builder()
+                .token(token)
                 .refreshToken(refreshToken)
                 .build();
     }
