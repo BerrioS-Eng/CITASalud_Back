@@ -1,7 +1,7 @@
 package com.project.citasalud.config;
 
-import com.project.citasalud.user.User;
-import com.project.citasalud.user.UserRepository;
+import com.project.citasalud.userAuth.UserAuth;
+import com.project.citasalud.userAuth.UserAuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final UserAuthRepository userAuthRepository;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -36,11 +36,11 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailService() {
         return username -> {
-            final User user = userRepository.findByDni(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            final UserAuth userAuth = userAuthRepository.findByDni(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("UserAuth not found"));
             return org.springframework.security.core.userdetails.User.builder()
-                    .username(user.getDni())
-                    .password(user.getPassword())
+                    .username(userAuth.getDni())
+                    .password(userAuth.getPassword())
                     .build();
         };
     }

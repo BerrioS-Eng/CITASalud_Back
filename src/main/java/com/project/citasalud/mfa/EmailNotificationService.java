@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @Service
-public class EmailVerificationService {
+public class EmailNotificationService {
 
     @Autowired
     private EmailService emailService;

@@ -1,6 +1,6 @@
 package com.project.citasalud.tokenJWT;
 
-import com.project.citasalud.user.User;
+import com.project.citasalud.userAuth.UserAuth;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +29,6 @@ public class Token {
     private TokenType tokenType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "userAuth_id")
+    private UserAuth userAuth;
 }

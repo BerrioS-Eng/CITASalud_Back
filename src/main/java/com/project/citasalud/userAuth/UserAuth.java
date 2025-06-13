@@ -1,6 +1,7 @@
-package com.project.citasalud.user;
+package com.project.citasalud.userAuth;
 
 import com.project.citasalud.tokenJWT.Token;
+import com.project.citasalud.userProfile.UserProfile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,16 +11,17 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user_auth")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class UserAuth implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -27,26 +29,22 @@ public class User implements UserDetails {
     private String dni;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false, length = 50)
-    private String firstName;
-    @Column(nullable = false, length = 50)
-    private String lastName;
-    @Column(nullable = false)
-    private String department;
-    @Column(nullable = false)
-    private String city;
-    @Column(nullable = false)
-    private String address;
     @Column(nullable = false, unique = true)
     private String email;
+    private Long failedLoginAttempts;
     @Column(nullable = false)
-    private String numberPhone;
+    private boolean locked;
+    private Instant UnlockedAt;
 
     @Enumerated(EnumType.STRING)
     Role role;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userAuth", fetch = FetchType.LAZY)
     private List<Token> tokens;
+
+    @OneToOne(mappedBy = "userAuth", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "userProfileId", referencedColumnName = "id")
+    private UserProfile userProfile;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
