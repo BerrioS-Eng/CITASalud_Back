@@ -4,6 +4,14 @@ WORKDIR /app
 
 COPY . .
 
+# Copiar el Maven Wrapper
+COPY mvnw .
+COPY .mvn .mvn
+
+# Dar permisos de ejecución
+RUN chmod +x mvnw
+
+
 RUN ./mvnw clean package -DskipTests
 
 FROM eclipse-temurin:20-jre
