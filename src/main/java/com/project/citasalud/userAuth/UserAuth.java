@@ -3,10 +3,7 @@ package com.project.citasalud.userAuth;
 import com.project.citasalud.tokenJWT.Token;
 import com.project.citasalud.userProfile.UserProfile;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"userProfile"})
 public class UserAuth implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,8 +40,8 @@ public class UserAuth implements UserDetails {
     @OneToMany(mappedBy = "userAuth", fetch = FetchType.LAZY)
     private List<Token> tokens;
 
-    @OneToOne(mappedBy = "userAuth", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "userProfileId", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_profile_id", referencedColumnName = "id")
     private UserProfile userProfile;
 
     @Override

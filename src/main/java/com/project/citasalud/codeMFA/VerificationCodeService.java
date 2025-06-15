@@ -37,4 +37,15 @@ public class VerificationCodeService {
         return true;
     }
 
+    @Transactional
+    public void verificationCodeExpired(String email){
+        Optional<VerificationCode> codeOptional = verificationCodeRepository.findByUserEmail(email);
+        if (codeOptional.isPresent()){
+            VerificationCode code = codeOptional.get();
+            if (Instant.now().isAfter(code.getExpiresAt())){
+                verificationCodeRepository.deleteByUserEmail(email);
+            }
+        }
+    }
+
 }

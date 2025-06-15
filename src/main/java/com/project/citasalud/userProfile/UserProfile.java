@@ -2,10 +2,7 @@ package com.project.citasalud.userProfile;
 
 import com.project.citasalud.userAuth.UserAuth;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "user_profiles")
@@ -13,6 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"userAuth"})
+@EqualsAndHashCode(exclude = {"userAuth"})
 public class UserProfile {
 
     @Id
@@ -31,6 +30,6 @@ public class UserProfile {
     @Column(nullable = false)
     private String numberPhone;
 
-    @OneToOne()
+    @OneToOne(mappedBy = "userProfile", fetch = FetchType.LAZY)
     private UserAuth userAuth;
 }

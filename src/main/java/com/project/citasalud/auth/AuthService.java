@@ -62,6 +62,7 @@ public class AuthService {
                 }
             }
 
+            verificationCodeService.verificationCodeExpired(userAuthOpt.get().getEmail());
 
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -100,7 +101,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .email(registerRequest.getEmail())
                 .role(Role.USER)
-                .userProfile(UserProfileRepository.save(userProfile))
+                .userProfile(userProfile)
                 .locked(false)
                 .build();
 
@@ -140,23 +141,10 @@ public class AuthService {
     }
 
     public AuthResponse refreshToken(final String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid bearer token");
-        }
 
         String refreshToken = authHeader.substring(7);
-        String userDni = jwtService.getDniFromToken(refreshToken);
 
-        if (userDni == null) {
-            throw new IllegalArgumentException("Invalid refresh token");
-        }
-
-        UserAuth userAuth = userAuthRepository.findByDni(userDni)
-                .orElseThrow(() -> new UsernameNotFoundException(userDni));
-
-        if (!jwtService.isTokenValid(refreshToken, userAuth)) {
-            throw new IllegalArgumentException("Invalid refresh token");
-        }
+        UserAuth userAuth = getUserValidatedByVerifiedToken(authHeader);
 
         String newToken = jwtService.getToken(userAuth);
         revokeAllUserTokens(userAuth);
@@ -228,6 +216,26 @@ public class AuthService {
 
     private String getClientIpAddress(){
         return clientIpHelper.getClientIpAddress();
+    }
+
+    public UserAuth getUserValidatedByVerifiedToken(String authHeader){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid bearer token");
+        }
+
+        String jwtToken = authHeader.substring(7);
+        String userDni = jwtService.getDniFromToken(jwtToken);
+        Optional<UserAuth> userAuthOptional = userAuthRepository.findByDni(userDni);
+
+        if (userAuthOptional.isEmpty()){
+            throw new IllegalArgumentException("User not found");
+        }
+
+        if (!jwtService.isTokenValid(jwtToken, userAuthOptional.get())){
+            throw new IllegalArgumentException("Invalid token");
+        }
+
+        return userAuthOptional.get();
     }
 
 }
