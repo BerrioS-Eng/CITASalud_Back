@@ -12,7 +12,6 @@ import com.project.citasalud.userAuth.Role;
 import com.project.citasalud.userAuth.UserAuth;
 import com.project.citasalud.userAuth.UserAuthRepository;
 import com.project.citasalud.userProfile.UserProfile;
-import com.project.citasalud.userProfile.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,7 +31,6 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserAuthRepository userAuthRepository;
-    private final UserProfileRepository UserProfileRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;

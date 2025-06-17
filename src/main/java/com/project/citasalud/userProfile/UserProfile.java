@@ -1,5 +1,6 @@
 package com.project.citasalud.userProfile;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.citasalud.userAuth.UserAuth;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,5 +32,6 @@ public class UserProfile {
     private String numberPhone;
 
     @OneToOne(mappedBy = "userProfile", fetch = FetchType.LAZY)
+    @JsonBackReference
     private UserAuth userAuth;
 }

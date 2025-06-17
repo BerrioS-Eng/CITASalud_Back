@@ -1,5 +1,6 @@
 package com.project.citasalud.userAuth;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.citasalud.tokenJWT.Token;
 import com.project.citasalud.userProfile.UserProfile;
 import jakarta.persistence.*;
@@ -32,7 +33,7 @@ public class UserAuth implements UserDetails {
     private Long failedLoginAttempts;
     @Column(nullable = false)
     private boolean locked;
-    private Instant UnlockedAt;
+    private Instant unlockedAt;
 
     @Enumerated(EnumType.STRING)
     Role role;
@@ -42,6 +43,7 @@ public class UserAuth implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_profile_id", referencedColumnName = "id")
+    @JsonManagedReference
     private UserProfile userProfile;
 
     @Override
