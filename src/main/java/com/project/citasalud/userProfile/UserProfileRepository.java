@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
 
-    UserProfile getByUserAuth(UserAuth userAuth);
 }

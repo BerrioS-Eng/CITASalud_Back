@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/userauth")
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "true")
 @RequiredArgsConstructor
 @Tag(name = "User Authentication Management", description = "User authentication API for managing user")
 public class UserAuthController {

@@ -1,6 +1,5 @@
 package com.project.citasalud.userAuth;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.citasalud.tokenJWT.Token;
 import com.project.citasalud.userProfile.UserProfile;
 import jakarta.persistence.*;
@@ -19,7 +18,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"userProfile"})
 public class UserAuth implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,11 +37,12 @@ public class UserAuth implements UserDetails {
     Role role;
 
     @OneToMany(mappedBy = "userAuth", fetch = FetchType.LAZY)
+    @Transient
     private List<Token> tokens;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_profile_id", referencedColumnName = "id")
-    @JsonManagedReference
+    @JoinColumn(name = "user_profile_id", referencedColumnName = "id", unique = true)
+    @Transient
     private UserProfile userProfile;
 
     @Override

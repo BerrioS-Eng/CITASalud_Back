@@ -1,7 +1,5 @@
 package com.project.citasalud.userProfile;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.project.citasalud.userAuth.UserAuth;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,8 +9,6 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"userAuth"})
-@EqualsAndHashCode(exclude = {"userAuth"})
 public class UserProfile {
 
     @Id
@@ -31,7 +27,4 @@ public class UserProfile {
     @Column(nullable = false)
     private String numberPhone;
 
-    @OneToOne(mappedBy = "userProfile", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private UserAuth userAuth;
 }
