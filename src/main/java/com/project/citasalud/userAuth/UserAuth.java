@@ -18,6 +18,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"tokens", "userProfile"})
+@EqualsAndHashCode(exclude = {"tokens", "userProfile"})
 public class UserAuth implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,12 +39,10 @@ public class UserAuth implements UserDetails {
     Role role;
 
     @OneToMany(mappedBy = "userAuth", fetch = FetchType.LAZY)
-    @Transient
     private List<Token> tokens;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_profile_id", referencedColumnName = "id", unique = true)
-    @Transient
     private UserProfile userProfile;
 
     @Override

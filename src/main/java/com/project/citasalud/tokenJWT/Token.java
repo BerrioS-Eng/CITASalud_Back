@@ -2,10 +2,10 @@ package com.project.citasalud.tokenJWT;
 
 import com.project.citasalud.userAuth.UserAuth;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "tokens")
@@ -13,7 +13,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Token {
+@ToString(exclude = {"userAuth"})
+@EqualsAndHashCode(exclude = {"userAuth"})
+public class Token implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
