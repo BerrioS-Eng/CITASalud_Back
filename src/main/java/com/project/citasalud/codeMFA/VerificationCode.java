@@ -19,7 +19,7 @@ public class VerificationCode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String userEmail;
     @Column(nullable = false)
     private String code;
